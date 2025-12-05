@@ -1,5 +1,21 @@
 -- add yours here
-vim.keymap.set("n", "<C-w>", "<Cmd>bdelete<CR>", { desc = "Close current buffer" })
+local function CustomCloseBuffer()
+  if vim.bo.modified then
+    local choice = vim.fn.confirm("Salvar alterações?", "&Sim\n&Não\n&Cancelar", 1, "Question")
+    if choice == 1 then -- Sim
+      vim.cmd("write")
+      vim.cmd("bdelete")
+    elseif choice == 2 then -- Não
+      vim.cmd("bdelete!")
+    -- if choice is 3 (Cancelar) or 0 (dialog dismissed), do nothing
+    end
+  else
+    -- Not modified, just close it
+    vim.cmd("bdelete")
+  end
+end
+
+vim.keymap.set("n", "<leader>w", CustomCloseBuffer, { desc = "Close buffer with confirmation" })
 
 local map = vim.keymap.set
 local command = vim.api.nvim_create_user_command
