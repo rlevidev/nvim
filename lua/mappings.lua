@@ -400,9 +400,7 @@ end, {
   end,
 })
 
-map("n", "<leader>e", function()
-  Snacks.explorer.open({})
-end, { desc = "files", silent = true, noremap = true })
+map("n", "<leader>e", "<CMD>KideTreeToggle<CR>", { desc = "Toggle Neo-tree", silent = true })
 
 -- outline
 map("n", "<leader>o", "<CMD>Outline<CR>", { desc = "Symbols Outline" })
