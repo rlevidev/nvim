@@ -1,4 +1,5 @@
 -- add yours here
+vim.keymap.set("n", "<C-w>", "<Cmd>bdelete<CR>", { desc = "Close current buffer" })
 
 local map = vim.keymap.set
 local command = vim.api.nvim_create_user_command

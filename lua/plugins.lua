@@ -28,6 +28,12 @@ return {
     "nvim-tree/nvim-web-devicons",
     lazy = true,
   },
+  {
+    "akinsho/bufferline.nvim",
+    version = "*",
+    dependencies = "nvim-tree/nvim-web-devicons",
+    opts = {},
+  },
 
   {
     "nvim-neo-tree/neo-tree.nvim",
