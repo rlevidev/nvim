@@ -28,6 +28,26 @@ return {
     "nvim-tree/nvim-web-devicons",
     lazy = true,
   },
+  {
+    "akinsho/bufferline.nvim",
+    version = "*",
+    dependencies = "nvim-tree/nvim-web-devicons",
+    opts = {},
+  },
+
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+      "3rd/image.nvim", -- Optional, for image previews
+    },
+    config = function()
+      require("kide.tree").setup()
+    end,
+  },
 
   {
     "stevearc/conform.nvim",
@@ -212,14 +232,6 @@ return {
     end,
   },
   {
-    "https://gitlab.com/schrieveslaach/sonarlint.nvim.git",
-    lazy = false,
-    enabled = vim.env["SONARLINT_ENABLE"] == "Y",
-    config = function()
-      require("kide.lsp.sonarlint").setup()
-    end,
-  },
-  {
     "JavaHello/microprofile.nvim",
     enabled = vim.g.enable_quarkus == true,
     lazy = true,
@@ -244,6 +256,14 @@ return {
         jdt_extensions_path = vim.env["NVIM_QUARKUS_JDT_EXTENSIONS_PATH"],
         microprofile_ext_path = vim.env["NVIM_QUARKUS_MICROPROFILE_EXT_PATH"],
       })
+    end,
+  },
+  {
+    "https://gitlab.com/schrieveslaach/sonarlint.nvim.git",
+    lazy = false,
+    enabled = vim.env["SONARLINT_ENABLE"] == "Y",
+    config = function()
+      require("kide.lsp.sonarlint").setup()
     end,
   },
   {
@@ -481,7 +501,7 @@ return {
       },
       bigfile = { enabled = true },
       -- dashboard = { enabled = true },
-      explorer = { enabled = true },
+      explorer = { enabled = false },
       indent = {
         enabled = true,
         filter = function(buf)
@@ -506,7 +526,7 @@ return {
           return true
         end,
       },
-      input = { enabled = true },
+      input = { enabled = false }, -- disabled for noice.nvim
       picker = {
         enabled = true,
         layout = {
@@ -576,5 +596,50 @@ return {
         enabled = true,
       },
     },
+  },
+  {
+    "rcarriga/nvim-notify",
+    lazy = true,
+    config = function()
+      vim.notify = require("notify")
+      require("notify").setup({
+        timeout = 3000,
+      })
+    end,
+  },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+    },
+    config = function()
+      require("noice").setup({
+        lsp = {
+          override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true,
+          },
+        },
+        presets = {
+          bottom_search = true,
+          command_palette = true,
+          long_message_to_split = true,
+          inc_rename = false,
+          lsp_doc_border = false,
+        },
+        routes = {
+          {
+            filter = { event = "msg_show", kind = "", find = "written" },
+            opts = { skip = true },
+          },
+        },
+      })
+      if vim.notify then
+        vim.notify = require("noice").notify
+      end
+    end,
   },
 }

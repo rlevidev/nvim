@@ -1,4 +1,20 @@
 -- add yours here
+local function CustomCloseBuffer()
+  if vim.bo.modified then
+    local choice = vim.fn.confirm("Salvar alterações?", "&Sim\n&Não\n&Cancelar", 1, "Question")
+    if choice == 1 then -- Sim
+      vim.cmd("write") -- APENAS SALVA, SEM FECHAR NADA
+    elseif choice == 2 then -- Não
+      vim.cmd("bdelete!") -- Se escolher 'Não', força o fechamento do buffer (comportamento original)
+    -- if choice is 3 (Cancelar) or 0 (dialog dismissed), do nothing
+    end
+  else
+    -- Se não estiver modificado, fecha o buffer
+    vim.cmd("bdelete")
+  end
+end
+
+vim.keymap.set("n", "<leader>w", CustomCloseBuffer, { desc = "Close buffer with confirmation" })
 
 local map = vim.keymap.set
 local command = vim.api.nvim_create_user_command
@@ -400,9 +416,7 @@ end, {
   end,
 })
 
-map("n", "<leader>e", function()
-  Snacks.explorer.open({})
-end, { desc = "files", silent = true, noremap = true })
+map("n", "<leader>e", "<CMD>KideTreeToggle<CR>", { desc = "Toggle Neo-tree", silent = true })
 
 -- outline
 map("n", "<leader>o", "<CMD>Outline<CR>", { desc = "Symbols Outline" })
